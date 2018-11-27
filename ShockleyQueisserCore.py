@@ -8,7 +8,7 @@
 #   Université de Lorraine, France
 #   sidi.hamady@univ-lorraine.fr
 # See Copyright Notice in COPYRIGHT
-# HowTo in README.md
+# HowTo in README.md and README.pdf
 # https://github.com/sidihamady/Shockley-Queisser
 # http://www.hamady.org/photovoltaics/ShockleyQueisser.zip
 # ======================================================================================================
@@ -936,6 +936,7 @@ class ShockleyQueisserCore(object):
         try:
  
             if not self.PlotInitialized:
+
                 idp = 0
                 for idc in range(0, self.curvecount):
                     self.line[idc], = self.plot[idp].plot(np.array([]), np.array([]), self.linestyle[idc], linewidth=self.linesize[idc], zorder=4)
@@ -992,9 +993,9 @@ class ShockleyQueisserCore(object):
                     self.plot[idp].get_yaxis().set_visible(True)
                 # end for
 
-            # end if
+                self.PlotInitialized = True
 
-            self.PlotInitialized = True
+            # end if
 
             idp = 0
             for idc in range(0, self.curvecount):

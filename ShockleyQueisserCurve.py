@@ -8,7 +8,7 @@
 #   Université de Lorraine, France
 #   sidi.hamady@univ-lorraine.fr
 # See Copyright Notice in COPYRIGHT
-# HowTo in README.md
+# HowTo in README.md and README.pdf
 # https://github.com/sidihamady/Shockley-Queisser
 # http://www.hamady.org/photovoltaics/ShockleyQueisser.zip
 # ======================================================================================================

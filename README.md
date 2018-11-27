@@ -32,13 +32,14 @@ Two text files:
 
 
 Two figures:  
-* [ShockleyQueisserCurve.pdf](ShockleyQueisserCurve.pdf) containing the Shockley-Queisser Efficiency vs Bandgap curve in PDF format (to integrate for example in LaTeX document).  
+* [ShockleyQueisserCurve.pdf](ShockleyQueisserCurve.pdf) containing the Shockley-Queisser Efficiency vs Bandgap curve in PDF format (to integrate for example in a LaTeX document).  
 * [ShockleyQueisserCurve.png](ShockleyQueisserCurve.png) containing the Shockley-Queisser Efficiency vs Bandgap curve in PNG format.  
 
 
-Two examples on how to use the program to calculate multijunction solar cell efficiency:  
-* [ShockleyQueisserTJ.py](ShockleyQueisserTJ.py) for triple solar cell junction.  
-* [ShockleyQueisserDJ.py](ShockleyQueisserDJ.py) for double solar cell junction.  
+Three examples:  
+* [ShockleyQueisserTJ.py](ShockleyQueisserTJ.py) for triple junction solar cell.  
+* [ShockleyQueisserDJ.py](ShockleyQueisserDJ.py) for double junction solar cell.  
+* [ShockleyQueisserCurve.py](ShockleyQueisserCurve.py) calculates and plots the efficiency of a PN junction solar cell with respect to the bandgap.  
 
 
 It is not necessary to know the Python language to use the program.
@@ -81,8 +82,8 @@ Screenshot under Linux:
 
 ## HowTo: Multijunction solar cell
 
-The program calculates the efficiency for a single junction solar cell but takes into account the part of solar spectrum already absorbed (for example in a top cell) through the Target top bandgap parameter.
-This is useful to calculate the overall efficiency in a multijunction solar cell.
+The program calculates the efficiency for a single junction solar cell but takes into account the part of solar spectrum already absorbed (for example in a top cell) through the Target top bandgap parameter.  
+This is useful to calculate the overall efficiency in a multijunction solar cell.  
 For example for double junction solar cell, follow the steps below:  
 1. set TargetBandgap to 1.65 eV and the TargetBandgapTop to 0, and calculate the corresponding efficiency and current-voltage characteristic.  
 2. set TargetBandgap to 0.95 eV and the TargetBandgapTop to 1.65, and calculate the corresponding efficiency and current-voltage characteristic.  
@@ -96,7 +97,7 @@ The calculator can be used in graphical (GUI) mode or command-line only mode. In
 
 The command-line mode is useful to perform specific calculations such as multijunction solar cell efficiency.
 
-Two examples are given in the included [ShockleyQueisserTJ.py](ShockleyQueisserTJ.py) and [ShockleyQueisserDJ.py](ShockleyQueisserDJ.py) files.  
+Two multijunction solar cell examples are given in the included [ShockleyQueisserTJ.py](ShockleyQueisserTJ.py) and [ShockleyQueisserDJ.py](ShockleyQueisserDJ.py) files.  
 The execution of [ShockleyQueisserTJ.py](ShockleyQueisserTJ.py) gives the following output:
 
 ![ShockleyQueisserTJ.py text output](screenshot3.png)
