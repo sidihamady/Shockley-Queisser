@@ -4,7 +4,7 @@
 # ======================================================================================================
 # Solar Cell Shockley-Queisser Limit Calculator
 # Code written by:
-#   Sidi Hamady
+#   Pr. Sidi Hamady
 #   Université de Lorraine, France
 #   sidi.hamady@univ-lorraine.fr
 # See Copyright Notice in COPYRIGHT
