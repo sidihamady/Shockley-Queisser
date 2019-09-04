@@ -2,7 +2,7 @@
 
 Code written by:  
 Sidi Hamady  
-Dr. habil. Eng., Associate professor  
+Full Professor, Dr. habil. Eng.
 Université de Lorraine, France  
 sidi.hamady@univ-lorraine.fr
 
