@@ -22,6 +22,8 @@ from ShockleyQueisserCore import *
 # create an instance of the core class
 SCC = ShockleyQueisserCore(verbose = False)
 
+print("\ncalculating...")
+
 # set useGUI to False to use the command-line mode
 SCC.calculate(
         TargetBandgap           = 1.1,
@@ -32,20 +34,24 @@ SCC.calculate(
         useGUI                  = False
         )
 
-
 # plot the efficiency-bandgap curve
 fig         = pl.figure(figsize=(10, 6), dpi=100, facecolor='#F1F1F1', linewidth=1.0, frameon=True)
 fig.canvas.set_window_title('Shockley-Queisser Efficiency vs Bandgap')
 ax          = fig.add_subplot(111)
-tline,      = ax.plot(SCC.Bandgap, SCC.Efficiency, '-', linewidth=2.0)
+tline,      = ax.plot(SCC.Bandgap, SCC.Efficiency, '-', linewidth=3.0)
 tline.set_color('b')
-ax.set_xlabel('$Bandgap\ (eV)$',        fontsize=14)
-ax.set_ylabel('$Efficiency\ (\%)$',     fontsize=14)
+ax.set_xlabel('$Bandgap\ (eV)$',        fontsize=16)
+ax.set_ylabel('$Efficiency\ (\%)$',     fontsize=16)
+pl.xticks(fontsize=16)
+pl.yticks(fontsize=16)
 pl.title('Shockley-Queisser Efficiency vs Bandgap')
 pdfT = PdfPages('ShockleyQueisserCurve.pdf')
 pdfT.savefig(fig)
 pdfT.close()
 np.savetxt('ShockleyQueisserCurve.txt', np.c_[SCC.Bandgap, SCC.Efficiency], fmt='%.6g\t%.6g', delimiter=SCC.DataDelimiter, newline='\n', header='Shockley-Queisser Efficiency vs Bandgap\nBandgap (eV)\tEfficiency (%)')
 pl.savefig('ShockleyQueisserCurve.png', dpi=600)
+pl.grid(True)
+pl.xlim([0.5, 3])
+pl.ylim([5, 34])
 pl.show()
 #
