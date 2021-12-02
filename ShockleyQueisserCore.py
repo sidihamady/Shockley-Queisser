@@ -58,7 +58,8 @@ try:
     from matplotlib.font_manager import FontProperties
     if sys.version_info[0] < 3:
         # Python 2.7.x
-        from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2TkAgg
+        from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+        from matplotlib.backends.backend_tkagg import NavigationToolbar2Tk as NavigationToolbar2TkAgg
         import Tkinter as Tk
         import ttk
         import tkFileDialog
@@ -283,7 +284,8 @@ class ShockleyQueisserCore(object):
         if (self.thread is None):
             return self.running
         # end if
-        if (not self.thread.isAlive()):
+        threadalive = self.thread.isAlive() if (sys.version_info[0] < 3) else self.thread.is_alive()
+        if (not threadalive):
             self.thread  = None
             self.running = False
         # end if
@@ -427,8 +429,8 @@ class ShockleyQueisserCore(object):
             self.toolbar.update()
             self.canvas._tkcanvas.pack(side=Tk.LEFT, fill=Tk.BOTH, expand=1)
 
-            self.canvas.show()
-
+            self.canvas.draw()
+            
             self.root.protocol('WM_DELETE_WINDOW', self.onClose)
 
             self.linecolor          = ['g', 'm', 'b', 'r']
