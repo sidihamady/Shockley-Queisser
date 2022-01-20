@@ -491,7 +491,7 @@ class ShockleyQueisserCore(object):
 
             self.GUIstarted = True
 
-            self.start()
+            #self.start()
 
             self.root.mainloop()
 
