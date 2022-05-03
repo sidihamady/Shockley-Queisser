@@ -1073,12 +1073,23 @@ class ShockleyQueisserCore(object):
             if (not sp):
                 return True
             # end if
-            if (len(sp) <= 12):
+            slen = len(sp)
+            if slen < 1:
+                return True
+            # end if
+            if (slen > 12):
+                sp = sp[:12]
+                slen = len(sp)
+            #
+            if (slen <= 12):
                 try:
                     spr = sp + '0'
                     float(spr)
                 except ValueError:
-                    return False
+                    if any(c not in '0123456789-+.e' for c in sp):
+                        return False
+                    # end if
+                    pass
                 # end try
                 self.TargetEdit.prev = sp
                 return True
