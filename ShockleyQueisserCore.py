@@ -1106,20 +1106,6 @@ class ShockleyQueisserCore(object):
         return self.start()
     # end onStart
 
-    def saveFigure(self, figureFilename):
-        if not figureFilename:
-            return
-        #
-        global figure
-        Fname = os.path.splitext(figureFilename)[0]
-        fileToSavePNG = Fname + '.png'
-        fileToSavePDF = Fname + '.pdf'
-        figure.savefig(fileToSavePNG)
-        pdfT = PdfPages(fileToSavePDF)
-        pdfT.savefig(figure)
-        pdfT.close()
-    # end saveFigure
- 
     def doSave(self, strFilename, savePDF = False):
 
         if (not strFilename) or self.isRunning():
