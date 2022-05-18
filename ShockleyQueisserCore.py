@@ -132,7 +132,7 @@ class ShockleyQueisserCore(object):
         """ the Shockley-Queisser calculator class constructor """
 
         self.name               = "Solar Cell Shockley-Queisser Limit Calculator"
-        self.__version__        = "Version 1.0 Build 1811"
+        self.__version__        = "Version 1.0 Build 2205"
 
         # Basic constants
         self.pi                 = 3.14159265358979      # 
@@ -331,7 +331,7 @@ class ShockleyQueisserCore(object):
             self.root.withdraw()
             self.root.wm_title(self.name)
 
-            self.figure = matplotlib.figure.Figure(figsize=(10,8), dpi=100, facecolor='#F1F1F1', linewidth=1.0, frameon=True)
+            self.figure = matplotlib.figure.Figure(figsize=(10,8), dpi=100, facecolor='#FFFFFF', linewidth=1.0, frameon=True)
 
             self.figure.subplots_adjust(top = 0.9, bottom = 0.1, left = 0.09, right = 0.95, wspace = 0.25, hspace = 0.25)
 
@@ -446,7 +446,7 @@ class ShockleyQueisserCore(object):
             # center the window
             iw = self.root.winfo_screenwidth()
             ih = self.root.winfo_screenheight()
-            isize = (1020, 680)
+            isize = (1152, 720)
             ix = (iw - isize[0]) / 2
             iy = (ih - isize[1]) / 2
             self.root.geometry("%dx%d+%d+%d" % (isize + (ix, iy)))
@@ -491,8 +491,6 @@ class ShockleyQueisserCore(object):
 
             self.GUIstarted = True
 
-            #self.start()
-
             self.root.mainloop()
 
         except Exception as excT:
@@ -531,22 +529,22 @@ class ShockleyQueisserCore(object):
 
             # load the spectral data from the input file and calculate the total power
             self.SolarSpectrumData  = np.loadtxt(self.SolarSpectrumAMX, delimiter=self.DataDelimiter, skiprows=2, usecols=(0,1))
-            self.Wavelength         = self.SolarSpectrumData[:,0]                   # nm
-            self.Irradiance         = self.SolarSpectrumData[:,1]                   # W/m2/nm
+            self.Wavelength         = self.SolarSpectrumData[:,0]   # nm
+            self.Irradiance         = self.SolarSpectrumData[:,1]   # W/m2/nm
             # check the data consistency
-            if ((len (self.Wavelength)              < 100)                      or 
-                (len (self.Irradiance)              < 100)                      or 
-                (len (self.Irradiance)              != len(self.Wavelength))    or 
-                (not (self.Wavelength               >= 200.0).all())            or 
-                (not (self.Wavelength               <= 10000.0).all())          or 
-                (not (self.Irradiance               >= 0.0).all())              or 
-                (not (self.Irradiance               <= 10.0).all())             or
+            if ((len (self.Wavelength)  < 100)                      or 
+                (len (self.Irradiance)  < 100)                      or 
+                (len (self.Irradiance)  != len(self.Wavelength))    or 
+                (not (self.Wavelength   >= 200.0).all())            or 
+                (not (self.Wavelength   <= 10000.0).all())          or 
+                (not (self.Irradiance   >= 0.0).all())              or 
+                (not (self.Irradiance   <= 10.0).all())             or
                 (not self.isIncSorted(self.Wavelength))):
                 raise Exception('invalid wavelength/irradiance')
             # end if
             
-            self.Energy             = self.nmeV / self.Wavelength                   # eV
-            self.SolarPower         = sp.trapz(self.Irradiance, x=self.Wavelength)  # for AM1.5 solar spectrum, the total power is close to 1000 W/m2 or 100 mW/cm2
+            self.Energy = self.nmeV / self.Wavelength   # eV
+            self.SolarPower = sp.trapz(self.Irradiance, x=self.Wavelength)  # for AM1.5 solar spectrum, the total power is close to 1000 W/m2 or 100 mW/cm2
             if (self.SolarPower < 1.0) or (self.SolarPower > 10000.0):
                 raise Exception('invalid total power density')
             # end if
@@ -1108,6 +1106,20 @@ class ShockleyQueisserCore(object):
         return self.start()
     # end onStart
 
+    def saveFigure(self, figureFilename):
+        if not figureFilename:
+            return
+        #
+        global figure
+        Fname = os.path.splitext(figureFilename)[0]
+        fileToSavePNG = Fname + '.png'
+        fileToSavePDF = Fname + '.pdf'
+        figure.savefig(fileToSavePNG)
+        pdfT = PdfPages(fileToSavePDF)
+        pdfT.savefig(figure)
+        pdfT.close()
+    # end saveFigure
+ 
     def doSave(self, strFilename, savePDF = False):
 
         if (not strFilename) or self.isRunning():
@@ -1116,15 +1128,14 @@ class ShockleyQueisserCore(object):
 
         try:
 
+            Fname = os.path.splitext(strFilename)[0]
             if savePDF and self.useGUI and self.GUIstarted:
-                # save figure in PDF format
-                pdfT = PdfPages(strFilename)
+                fileToSavePNG = Fname + '.png'
+                fileToSavePDF = Fname + '.pdf'
+                self.figure.savefig(fileToSavePNG)
+                pdfT = PdfPages(fileToSavePDF)
                 pdfT.savefig(self.figure)
                 pdfT.close()
-                # and in PNG format
-                strPNG = os.path.splitext(strFilename)[0]
-                strPNG = strPNG + '.png'
-                pl.savefig(strPNG, dpi=600)
             # end if
 
             # save output data in text format
@@ -1237,7 +1248,7 @@ class ShockleyQueisserCore(object):
                              (self.name                                                         +
                               "\n"                                                              +
                               self.__version__                                                  +
-                              "\nCopyright(C) 2018-2019 Pr. Sidi OULD SAAD HAMADY \n"           +
+                              "\nCopyright(C) 2018-2022 Pr. Sidi OULD SAAD HAMADY \n"           +
                               "Université de Lorraine, France \n"                               +
                               "sidi.hamady@univ-lorraine.fr \n"                                 +
                               "https://github.com/sidihamady/Shockley-Queisser \n"              +
