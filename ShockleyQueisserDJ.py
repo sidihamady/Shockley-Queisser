@@ -22,7 +22,8 @@
 from ShockleyQueisserCore import *
 
 # create an instance of the core class (and disable printing output)
-SCC = ShockleyQueisserCore(verbose = False)
+# set useTkinterGUI to False to use the command-line mode
+SCC = ShockleyQueisserCore(verbose = False, useTkinterGUI = False)
 
 aGapTop = np.arange(0.25, 3.25, 0.05)
 aGapBot = np.copy(aGapTop)
@@ -50,14 +51,12 @@ for ii in range(0, len(aGapBot)):
         ccx     = 0
         TBT     = 0.0
         for TB in (GapT, GapB):
-            # set useGUI to False to use the command-line mode
             SCC.calculate(
                     TargetBandgap           = TB,
                     TargetBandgapTop        = TBT,
                     Temperature             = 300.0,
                     SolarConcentration      = 1.0,
-                    OutputFilename          = None,
-                    useGUI                  = False
+                    OutputFilename          = None
                     )
             aV[cc]  = np.copy(SCC.Target_Voltage)
             aJ[cc]  = np.copy(SCC.Target_Current)
@@ -107,10 +106,10 @@ print("\ndone. elapsed time = %.3f sec." % float(time.time() - ticT))
 treport = ("Double junction max efficiency = %.2f %% obtained for bandgaps = (%.3f ; %.3f) eV" % (EffMax, GapTopMax, GapBotMax))
 print("\n----------------------------------------------------------------------\n" + treport + "\n----------------------------------------------------------------------\n")
 
-fig = pl.figure(figsize=(10, 6), dpi=100, facecolor='#F1F1F1', linewidth=1.0, frameon=True)
+fig = pl.figure(figsize=(10, 6), dpi=100, facecolor='#FFFFFF', linewidth=1.0, frameon=True)
 fig.canvas.set_window_title('Double Junction Solar Cell')
 ax  = fig.add_subplot(111)
-pl.contourf(aGapBot, aGapTop, aEff, 4 * len(aGapBot))
+pl.contourf(aGapBot, aGapTop, aEff, 4 * len(aGapBot), cmap="CMRmap")
 cb  = pl.colorbar()
 pl.plot(GapBotMax, GapTopMax, 'w+')
 cb.ax.set_ylabel('Efficiency (%)')

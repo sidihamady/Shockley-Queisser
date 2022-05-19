@@ -22,7 +22,8 @@
 from ShockleyQueisserCore import *
 
 # create an instance of the core class
-SCC = ShockleyQueisserCore()
+# set useTkinterGUI to False to use the command-line mode
+SCC = ShockleyQueisserCore(verbose = False, useTkinterGUI = False)
 
 # set the triple junction solar cell parameters
 aTargetBandgap      = np.array([1.9,    1.4,        0.9])      # bandgaps
@@ -44,14 +45,12 @@ aVOCx               = 0.0
 
 for TB,TBT in zip(aTargetBandgap, aTargetBandgapTop):
 
-    # set useGUI to False to use the command-line mode
     SCC.calculate(
             TargetBandgap           = TB,
             TargetBandgapTop        = TBT,
             Temperature             = 300.0,
             SolarConcentration      = 1.0,
-            OutputFilename          = None,
-            useGUI                  = False
+            OutputFilename          = None
             )
 
     aJSC    = np.append(aJSC, SCC.Target_JSC)
@@ -93,7 +92,7 @@ treport = ("Triple junction solar cell efficiency = %.3f %%\n with a nominal pow
 print("\n----------------------------------------------------------------------\n" + treport + "\n----------------------------------------------------------------------\n")
 
 # plot the current-voltage characteristics
-fig         = pl.figure(figsize=(10, 6), dpi=100, facecolor='#F1F1F1', linewidth=1.0, frameon=True)
+fig         = pl.figure(figsize=(10, 6), dpi=100, facecolor='#FFFFFF', linewidth=1.0, frameon=True)
 fig.canvas.set_window_title('Triple Junction Solar Cell')
 ax          = fig.add_subplot(111)
 linestyle   = ['-', '-', '-', '-']
@@ -105,7 +104,7 @@ for jj in range(0, aTargetLen):
 # end for
 tline,      = ax.plot(aVx, aJx, linestyle[aTargetLen], linewidth=linesize[aTargetLen], label="Triple Junction")
 tline.set_color(linecolor[aTargetLen])
-leg         = pl.legend(loc='upper center', ncol=4, frameon=1, fontsize='medium')
+leg         = pl.legend(loc='best', ncol=4, frameon=1, fontsize='medium')
 legframe    = leg.get_frame()
 legframe.set_facecolor('white')
 legframe.set_edgecolor('black')

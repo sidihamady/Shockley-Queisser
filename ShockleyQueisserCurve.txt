@@ -1,5 +1,5 @@
 # Shockley-Queisser Efficiency vs Bandgap
-# Bandgap (eV)	Efficiency (%)
+# Bandgap (eV)	Photovoltaic Efficiency (%)
 0.310737	5.5795
 0.318667	5.92336
 0.326596	6.26949

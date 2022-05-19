@@ -25,7 +25,10 @@
 from ShockleyQueisserCore import *
 
 # 1. create an instance of the core class
-SCC = ShockleyQueisserCore(verbose = False)
+# set verbose to True to enable printing output
+# The calculator can be used in graphical (GUI) mode or command-line only mode. In command-line mode (useTkinterGUI = False) the results are printed out and saved in text files.
+#   the command-line mode is useful to perform specific calculations such as multijunction solar cell efficiency (see example in README.md).
+SCC = ShockleyQueisserCore(verbose = False, useTkinterGUI = True)
 
 # 2. change the parameters and calculate
 SCC.calculate(
@@ -39,10 +42,8 @@ SCC.calculate(
                                                                 #       examples are given in ShockleyQueisserTJ.py and ShockleyQueisserDJ.py.
         Temperature             = 300.0,                        # Temperature in Kelvin (from 100 K to 700 K)
         SolarConcentration      = 1.0,                          # Solar concentration (1 sun to 1000 suns)
-        OutputFilename          = './ShockleyQueisserOutput',   # Output file name without extension (used to save figure in PDF format if using GUI, and the text output data). Set to None to disable.
-        useGUI                  = True                          # The calculator can be used in graphical (GUI) mode or command-line only mode. In command-line mode (useGUI = False) the results are printed out and saved in text files.
-                                                                #   the command-line mode is useful to perform specific calculations such as multijunction solar cell efficiency (see example in README.md).
-        )
+        OutputFilename          = './ShockleyQueisserOutput'    # Output file name without extension (used to save figure in PDF format if using GUI, and the text output data). Set to None to disable.
+    )
 
 # main output data:
 # SCC.SQ_Efficiency         SCC.SQ_VOC          SCC.SQ_JSC          SCC.SQ_FF           SCC.SQ_Voltage (array)          SCC.SQ_Current (array)

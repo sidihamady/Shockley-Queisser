@@ -30,8 +30,7 @@
 #           TargetBandgapTop        = 0.0,
 #           Temperature             = 300.0,
 #           SolarConcentration      = 1.0,
-#           OutputFilename          = './ShockleyQueisserOutput',
-#           useGUI                  = True
+#           OutputFilename          = './ShockleyQueisserOutput'
 #       )
 #
 
@@ -128,7 +127,7 @@ class CalculationThread(threading.Thread):
 class ShockleyQueisserCore(object):
     """ the Shockley-Queisser calculator core class """
 
-    def __init__(self, verbose = True):
+    def __init__(self, verbose = True, useTkinterGUI = True):
         """ the Shockley-Queisser calculator class constructor """
 
         self.name               = "Solar Cell Shockley-Queisser Limit Calculator"
@@ -197,7 +196,6 @@ class ShockleyQueisserCore(object):
 
         self.report             = None
 
-        self.useGUI             = True
         self.root               = None
         self.GUIstarted         = False
         self.PlotInitialized    = False
@@ -214,6 +212,15 @@ class ShockleyQueisserCore(object):
             print("\nverbose set to False: printing output disabled")
         # end if
 
+        # useTkinterGUI: the calculator can be used in graphical (GUI) mode or command-line only mode. 
+        #   in command-line mode (useTkinterGUI = False) the results are printed out and saved in text files.
+        #   the command-line mode is useful to perform specific calculations such as multijunction solar cell efficiency
+        if useTkinterGUI and (not TkFound):
+            # if Tkinter is not found, just install or update python/numpy/scipy/matplotlib/tk modules
+            print(TkRet)
+        # end if
+        self.useTkinterGUI = useTkinterGUI if TkFound else False
+
         return
 
     # end __init__
@@ -223,23 +230,13 @@ class ShockleyQueisserCore(object):
         TargetBandgapTop        = 0.0,
         Temperature             = 300.0,
         SolarConcentration      = 1.0,
-        OutputFilename          = './ShockleyQueisserOutput',
-        useGUI                  = True):
+        OutputFilename          = './ShockleyQueisserOutput'):
         """ the Shockley-Queisser calculator main function """
 
         # recalculate the Shockley-Queisser curve if changing temperature or solar concentration
         if self.SQ_Done and ((Temperature != self.Temperature) or (SolarConcentration != self.SolarConcentration)):
             self.SQ_Done = False
         # end if
-
-        # useGUI: the calculator can be used in graphical (GUI) mode or command-line only mode. 
-        #   in command-line mode (useGUI = False) the results are printed out and saved in text files.
-        #   the command-line mode is useful to perform specific calculations such as multijunction solar cell efficiency
-        if useGUI and (not TkFound):
-            # if Tkinter is not found, just install or update python/numpy/scipy/matplotlib/tk modules
-            print(TkRet)
-        # end if
-        self.useGUI = useGUI if TkFound else False
 
         # Temperature: in Kelvin (from 100 K to 700 K)
         self.Temperature            = Temperature if ((Temperature >= 100.0) and (TargetBandgap <= 700.0)) else 300.0
@@ -268,7 +265,7 @@ class ShockleyQueisserCore(object):
             self.OutputFilename     = self.OutputFilename + '.pdf'
         # end if
 
-        if self.useGUI:
+        if self.useTkinterGUI:
             # GUI mode: calculation done in a working thread
             self.startGUI()
         else:
@@ -308,7 +305,7 @@ class ShockleyQueisserCore(object):
     # init the Tkinter GUI
     def startGUI(self):
 
-        if self.GUIstarted or (not self.useGUI):
+        if self.GUIstarted or (not self.useTkinterGUI):
             return
         # end if
 
@@ -330,6 +327,7 @@ class ShockleyQueisserCore(object):
             self.root.bind_class("Entry","<Control-y>", self.onEntryRedo)
             self.root.withdraw()
             self.root.wm_title(self.name)
+            self.root.option_add('*Dialog.msg.font', 'Helvetica 11')
 
             self.figure = matplotlib.figure.Figure(figsize=(10,8), dpi=100, facecolor='#FFFFFF', linewidth=1.0, frameon=True)
 
@@ -679,7 +677,7 @@ class ShockleyQueisserCore(object):
             return False
         # end if
 
-        if self.useGUI and self.GUIstarted:
+        if self.useTkinterGUI and self.GUIstarted:
             # GUI mode
 
             # get the input parameters
@@ -763,14 +761,14 @@ class ShockleyQueisserCore(object):
                  (self.SolarConcentration   < 1.0)          or 
                  (self.SolarConcentration   > 1000.0)):
                 strErr = "\n! cannot perform calculations:\n  invalid input parameters\n"
-                if self.useGUI and (self.report is not None):
+                if self.useTkinterGUI and (self.report is not None):
                     self.report.set_color('red')
                     self.report.set_text(strErr)
                     self.canvas.draw()
                 # end if
                 print(strErr)
             else:
-                if self.useGUI:
+                if self.useTkinterGUI:
                     self.actionbutton = self.btnCalculate
                     self.setRunning(running = True)
                     self.thread = CalculationThread(id=1, func=self.run)
@@ -836,7 +834,7 @@ class ShockleyQueisserCore(object):
                 for aGap in self.BandgapRange:
                     (aEff, aVOC, aJSC, aFF, aVm, aJm, aVoltage, aCurrent, strRet) = self.calculateEfficiency(aGap, 0.0)
                     if strRet is not None:
-                        if self.useGUI and self.GUIstarted and (self.report is not None):
+                        if self.useTkinterGUI and self.GUIstarted and (self.report is not None):
                             self.report.set_color('red')
                             self.report.set_text(strRet)
                             self.canvas.draw()
@@ -905,7 +903,7 @@ class ShockleyQueisserCore(object):
             excType, excObj, excTb = sys.exc_info()
             excFile = os.path.split(excTb.tb_frame.f_code.co_filename)[1]
             strErr  = "\n! %s\n  in %s (line %d)\n" % (str(excT), excFile, excTb.tb_lineno)
-            if self.useGUI and (self.report is not None):
+            if self.useTkinterGUI and (self.report is not None):
                 self.report.set_color('red')
                 self.report.set_text(strErr)
                 self.canvas.draw()
@@ -922,7 +920,7 @@ class ShockleyQueisserCore(object):
     # end run
 
     def setFocus(self):
-        if (not self.useGUI) or (not self.root):
+        if (not self.useTkinterGUI) or (not self.root):
             return
         # end if
         self.root.attributes('-topmost', 1)
@@ -933,7 +931,7 @@ class ShockleyQueisserCore(object):
     # plot the efficiency vs bandgap curve
     def updatePlot(self):
 
-        if (not self.useGUI):
+        if (not self.useTkinterGUI):
             return
         # end if
 
@@ -1052,7 +1050,7 @@ class ShockleyQueisserCore(object):
             excType, excObj, excTb = sys.exc_info()
             excFile = os.path.split(excTb.tb_frame.f_code.co_filename)[1]
             strErr  = "\n! cannot plot data:\n  %s\n  in %s (line %d)\n" % (str(excT), excFile, excTb.tb_lineno)
-            if self.useGUI and (self.report is not None):
+            if self.useTkinterGUI and (self.report is not None):
                 self.report.set_color('red')
                 self.report.set_text(strErr)
                 self.canvas.draw()
@@ -1115,7 +1113,7 @@ class ShockleyQueisserCore(object):
         try:
 
             Fname = os.path.splitext(strFilename)[0]
-            if savePDF and self.useGUI and self.GUIstarted:
+            if savePDF and self.useTkinterGUI and self.GUIstarted:
                 fileToSavePNG = Fname + '.png'
                 fileToSavePDF = Fname + '.pdf'
                 self.figure.savefig(fileToSavePNG)
@@ -1136,7 +1134,7 @@ class ShockleyQueisserCore(object):
         except Exception as excT:
 
             strErr = "\n! cannot save output data:\n  %s\n" % str(excT)
-            if self.useGUI and self.GUIstarted and (self.report is not None):
+            if self.useTkinterGUI and self.GUIstarted and (self.report is not None):
                 self.report.set_color('red')
                 self.report.set_text(strErr)
                 self.canvas.draw()
@@ -1153,7 +1151,7 @@ class ShockleyQueisserCore(object):
     # end doSave
 
     def onSave(self):
-        if (not self.useGUI) or self.isRunning():
+        if (not self.useTkinterGUI) or self.isRunning():
             return
         # end if
         fileopt = {}
@@ -1170,7 +1168,7 @@ class ShockleyQueisserCore(object):
     # end onSave
 
     def onAutoScale(self):
-        if (not self.useGUI) or self.isRunning():
+        if (not self.useTkinterGUI) or self.isRunning():
             return
         # end if
         for idp in range(0, self.plotcount):
@@ -1181,7 +1179,7 @@ class ShockleyQueisserCore(object):
     # end onAutoScale
 
     def onEntryUndo(self, event):
-        if not self.useGUI:
+        if not self.useTkinterGUI:
             return
         # end if
         try:
@@ -1199,7 +1197,7 @@ class ShockleyQueisserCore(object):
     # end onEntryUndo
 
     def onEntryRedo(self, event):
-        if not self.useGUI:
+        if not self.useTkinterGUI:
             return
         # end if
         try:
@@ -1216,7 +1214,7 @@ class ShockleyQueisserCore(object):
     # end onEntryRedo
 
     def onEntrySelectAll(self, event):
-        if not self.useGUI:
+        if not self.useTkinterGUI:
             return
         # end if
         try:
@@ -1227,7 +1225,7 @@ class ShockleyQueisserCore(object):
     # end onEntrySelectAll
 
     def onAbout(self):
-        if not self.useGUI:
+        if not self.useTkinterGUI:
             return
         # end if
         tkMessageBox.showinfo(self.name,
@@ -1244,7 +1242,7 @@ class ShockleyQueisserCore(object):
     # end onAbout
 
     def onPopmenu(self, event):
-        if (not self.useGUI):
+        if (not self.useTkinterGUI):
             return
         # end if
         try:
@@ -1255,7 +1253,7 @@ class ShockleyQueisserCore(object):
     # end onPopmenu
 
     def onClose(self):
-        if (not self.useGUI) or (self.root is None):
+        if (not self.useTkinterGUI) or (self.root is None):
             return
         # end if
         try:
